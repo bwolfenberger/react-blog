@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import './App.css'
+import Posts from './Posts.js'
+import { useEffect, useState } from 'react'
+import axios from 'axios';
 
-function App() {
+import { BrowserRouter as Router, Route } from 'react-router-dom'
+
+const App = () => {
+  let [data, setData] = useState([])
+  
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await axios.get('http://localhost:3001/blog')
+        // console.log(response.data)
+        setData(response.data)
+      } catch(err) {
+        console.log(err)
+      }
+    }
+    fetchData()
+  }, [])
+
+  // console.log(data)
+
+  const renderedData = data.map((data, index) =>
+    <Posts key={index} data={data} />)
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Router>
+        <h1>Posts</h1>
+        {renderedData}
+      </Router>
     </div>
-  );
+  )
 }
 
 export default App;
